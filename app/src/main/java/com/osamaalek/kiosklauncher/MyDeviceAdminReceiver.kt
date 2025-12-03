@@ -1,4 +1,4 @@
-package com.osamaalek.kiosklauncher
+package br.com.szsolucoes.kiosklauncher
 
 import android.app.admin.DeviceAdminReceiver
 import android.content.Context

@@ -1,4 +1,4 @@
-package com.osamaalek.kiosklauncher
+package br.com.szsolucoes.kiosklauncher
 
 import org.junit.Test
 

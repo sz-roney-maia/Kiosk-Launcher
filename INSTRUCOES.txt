@@ -1,0 +1,76 @@
+SZ SOLUCOES - KIOSK LAUNCHER
+===============================
+
+SCRIPTS DISPONIVEIS:
+====================
+
+1. fix_device.bat (NOVO!)
+   - DIAGNOSTICO COMPLETO antes da instalacao
+   - Detecta problemas como contas Google
+   - Recomenda solucoes especificas
+
+2. install_kiosk.bat
+   - Instala e configura o Kiosk Launcher automaticamente
+   - Requer: ADB instalado, dispositivo conectado, APK do totem na raiz
+
+3. uninstall_kiosk.bat
+   - Remove o Kiosk Launcher e todas as restricoes
+   - Restaura o dispositivo ao estado normal
+
+4. kiosk_config.bat
+   - Mostra informacoes sobre a configuracao atual
+   - Verifica Device Owner, apps instalados e restricoes
+
+PREPARACAO DO DISPOSITIVO:
+=========================
+
+1. HABILITAR MODO DESENVOLVEDOR:
+   - Configuracoes > Sobre o dispositivo
+   - Toque 7x em "Numero da compilacao"
+   - Volte > Opcoes do desenvolvedor
+
+2. ATIVAR OPCOES:
+   - Depuracao USB: LIGADO
+   - Desbloquear OEM: LIGADO (se disponivel)
+   - Instalar apps via USB: LIGADO
+
+3. REMOVER CONTAS GOOGLE (IMPORTANTE!):
+   - Configuracoes > Contas > Google
+   - Toque no menu (3 pontos) > Remover conta
+   - Confirme a remocao
+   - SEM CONTAS GOOGLE o Device Owner funciona!
+
+4. CONECTAR VIA USB:
+   - Conecte o cabo USB
+   - Aceite a autorizacao no dispositivo
+
+ARQUIVOS NECESSARIOS:
+====================
+
+- APK do totem: "totem-sao-jose.apk" (coloque na raiz do projeto)
+- ADB instalado e no PATH do sistema
+
+PROCESSO DE INSTALACAO:
+======================
+
+1. Execute: install_kiosk.bat
+2. Aguarde a instalacao automatica
+3. Dispositivo reinicializara automaticamente
+4. Kiosk mode estara ativo
+
+SENHAS E CONFIGURACOES:
+======================
+
+- Senha para sair do kiosk: sz221124zs
+- Package principal: br.com.szsolucoes.totemsaojose
+- Launcher package: br.com.szsolucoes.kiosklauncher
+
+SUPORTE:
+=======
+
+Para problemas:
+1. Execute: kiosk_config.bat (para diagnostico)
+2. Execute: uninstall_kiosk.bat (para reset)
+3. Reinstale seguindo os passos acima
+
+CONTATO: SZ Solucoes

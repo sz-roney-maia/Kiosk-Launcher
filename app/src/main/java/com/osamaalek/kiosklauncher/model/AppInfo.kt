@@ -1,4 +1,4 @@
-package com.osamaalek.kiosklauncher.model
+package br.com.szsolucoes.kiosklauncher.model
 
 import android.graphics.drawable.Drawable
 

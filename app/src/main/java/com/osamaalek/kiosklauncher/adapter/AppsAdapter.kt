@@ -1,4 +1,4 @@
-package com.osamaalek.kiosklauncher.adapter
+package br.com.szsolucoes.kiosklauncher.adapter
 
 import android.content.Context
 import android.content.Intent
@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.osamaalek.kiosklauncher.R
-import com.osamaalek.kiosklauncher.model.AppInfo
+import br.com.szsolucoes.kiosklauncher.R
+import br.com.szsolucoes.kiosklauncher.model.AppInfo
 
 
 class AppsAdapter(private val list: List<AppInfo>, private val context: Context) :

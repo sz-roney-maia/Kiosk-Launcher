@@ -1,4 +1,4 @@
-package com.osamaalek.kiosklauncher.ui
+package br.com.szsolucoes.kiosklauncher.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,9 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.VERTICAL
-import com.osamaalek.kiosklauncher.R
-import com.osamaalek.kiosklauncher.adapter.AppsAdapter
-import com.osamaalek.kiosklauncher.util.AppsUtil
+import br.com.szsolucoes.kiosklauncher.R
+import br.com.szsolucoes.kiosklauncher.adapter.AppsAdapter
+import br.com.szsolucoes.kiosklauncher.util.AppsUtil
 
 class AppsListFragment : Fragment() {
 

@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.osamaalek.kiosklauncher'
+    namespace 'br.com.szsolucoes.kiosklauncher'
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.osamaalek.kiosklauncher"
+        applicationId "br.com.szsolucoes.kiosklauncher"
         minSdk 23
         targetSdk 32
         versionCode 1

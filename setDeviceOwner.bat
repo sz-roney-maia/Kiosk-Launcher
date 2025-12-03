@@ -1,0 +1,1 @@
+adb shell dpm set-device-owner br.com.szsolucoes.kiosklauncher/.MyDeviceAdminReceiver
