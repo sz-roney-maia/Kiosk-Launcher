@@ -21,6 +21,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Usa a assinatura de debug para permitir instalação
+            // Para produção, configure uma keystore específica
+            signingConfig signingConfigs.debug
         }
     }
     compileOptions {

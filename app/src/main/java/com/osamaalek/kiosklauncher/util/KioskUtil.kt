@@ -34,6 +34,15 @@ class KioskUtil {
                 )
             }
             if (devicePolicyManager.isDeviceOwnerApp(context.packageName)) {
+                // IMPORTANTE: Remover a restrição de desinstalação para permitir desinstalar apps
+                try {
+                    devicePolicyManager.clearUserRestriction(
+                        myDeviceAdmin, UserManager.DISALLOW_UNINSTALL_APPS
+                    )
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
                 val filter = IntentFilter(Intent.ACTION_MAIN)
                 filter.addCategory(Intent.CATEGORY_HOME)
                 filter.addCategory(Intent.CATEGORY_DEFAULT)
@@ -57,22 +66,23 @@ class KioskUtil {
                 devicePolicyManager.setLockTaskPackages(myDeviceAdmin, appsWhiteList)
 
                 // Restrições adicionais para maior segurança
-                devicePolicyManager.addUserRestriction(
-                    myDeviceAdmin, UserManager.DISALLOW_SAFE_BOOT
-                )
-                devicePolicyManager.addUserRestriction(
-                    myDeviceAdmin, UserManager.DISALLOW_FACTORY_RESET
-                )
-                devicePolicyManager.addUserRestriction(
-                    myDeviceAdmin, UserManager.DISALLOW_ADD_USER
-                )
-                devicePolicyManager.addUserRestriction(
-                    myDeviceAdmin, UserManager.DISALLOW_MOUNT_PHYSICAL_MEDIA
-                )
+                // devicePolicyManager.addUserRestriction(
+                //     myDeviceAdmin, UserManager.DISALLOW_SAFE_BOOT
+                // )
+                // devicePolicyManager.addUserRestriction(
+                //     myDeviceAdmin, UserManager.DISALLOW_FACTORY_RESET
+                // )
+                // devicePolicyManager.addUserRestriction(
+                //     myDeviceAdmin, UserManager.DISALLOW_ADD_USER
+                // )
+                // devicePolicyManager.addUserRestriction(
+                //     myDeviceAdmin, UserManager.DISALLOW_MOUNT_PHYSICAL_MEDIA
+                // )
 
-                devicePolicyManager.addUserRestriction(
-                    myDeviceAdmin, UserManager.DISALLOW_UNINSTALL_APPS
-                )
+                // NUNCA adicionar esta restrição - ela impede desinstalação de apps
+                // devicePolicyManager.addUserRestriction(
+                //     myDeviceAdmin, UserManager.DISALLOW_UNINSTALL_APPS
+                // )
 
                 // Desabilitar barra de navegação globalmente via policy_control
                 disableNavigationBarGlobally(context)
@@ -108,9 +118,14 @@ class KioskUtil {
                         context.stopLockTask()
                     }
                     if (devicePolicyManager.isDeviceOwnerApp(context.packageName)) {
-                        devicePolicyManager.clearUserRestriction(
-                            myDeviceAdmin, UserManager.DISALLOW_UNINSTALL_APPS
-                        )
+                        // Garantir que a restrição seja removida
+                        try {
+                            devicePolicyManager.clearUserRestriction(
+                                myDeviceAdmin, UserManager.DISALLOW_UNINSTALL_APPS
+                            )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
 
                 }

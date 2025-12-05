@@ -25,9 +25,9 @@ class MainActivity : AppCompatActivity() {
         enableImmersiveMode()
 
         // Aguardar um pouco para garantir que o kiosk mode esteja ativo antes de abrir o app
-        handler.postDelayed({
-            openMainApp()
-        }, 1000) // 1 segundo de delay
+        // handler.postDelayed({
+        //     openMainApp()
+        // }, 1000) // 1 segundo de delay
     }
 
     override fun onResume() {
@@ -38,9 +38,9 @@ class MainActivity : AppCompatActivity() {
         enableImmersiveMode()
 
         // Verificar se o app principal está rodando, se não estiver, abri-lo
-        handler.postDelayed({
-            ensureMainAppIsRunning()
-        }, 2000)
+        // handler.postDelayed({
+        //     ensureMainAppIsRunning()
+        // }, 2000)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

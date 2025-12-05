@@ -35,7 +35,7 @@ del temp_devices.txt
 REM Compilar APK
 echo.
 echo [3/8] Compilando Kiosk Launcher...
-call gradlew assembleDebug
+call gradlew assembleRelease
 if %ERRORLEVEL% neq 0 (
     echo ERRO: Falha na compilacao!
     pause
@@ -46,7 +46,14 @@ echo Compilacao concluida!
 REM Instalar Kiosk Launcher
 echo.
 echo [4/8] Instalando Kiosk Launcher...
-adb install -r app\build\outputs\apk\debug\app-debug.apk
+REM Verificar se existe APK assinado (release assinado)
+if exist "app\build\outputs\apk\release\app-release.apk" (
+    adb install -t -r app\build\outputs\apk\release\app-release.apk
+) else (
+    REM Se não existir, tentar o unsigned (pode falhar)
+    echo AVISO: APK assinado nao encontrado, tentando unsigned...
+    adb install -t -r app\build\outputs\apk\release\app-release-unsigned.apk
+)
 if %ERRORLEVEL% neq 0 (
     echo ERRO: Falha na instalacao do Kiosk Launcher!
     pause
@@ -54,28 +61,58 @@ if %ERRORLEVEL% neq 0 (
 )
 echo Kiosk Launcher instalado!
 
-REM Verificar se APK do totem existe
+REM Verificar e remover Device Owner existente antes de instalar app do totem
 echo.
-echo [5/8] Procurando APK do totem...
-if not exist "totem-sao-jose.apk" (
-    echo AVISO: APK do totem nao encontrado (totem-sao-jose.apk)
-    echo O script continuara sem instalar o app do totem.
-    echo Instale manualmente depois: adb install -r totem-sao-jose.apk
-    set SKIP_TOTEM=1
-) else (
-    set SKIP_TOTEM=0
-)
+echo [4.5/8] Verificando e removendo Device Owner existente...
+REM Usar dumpsys device_policy para descobrir os owners
+adb shell dumpsys device_policy > temp_owners.txt 2>nul
 
-if %SKIP_TOTEM%==0 (
-    echo Instalando app do totem...
-    adb install -r totem-sao-jose.apk
-    if %ERRORLEVEL% neq 0 (
-        echo ERRO: Falha na instalacao do app do totem!
-        pause
-        exit /b 1
+REM Verificar se encontrou Device Owner
+REM Procurar por "Device Owner:" (com espaço e dois pontos) no output do dumpsys
+findstr /C:"Device Owner:" temp_owners.txt >nul
+if %ERRORLEVEL% equ 0 (
+    echo Device Owner encontrado! Removendo...
+    REM Para Device Owner, a melhor forma e desinstalar o app (remove automaticamente o Device Owner)
+    REM Tentar remover admin apenas se nao for Device Owner (para evitar erro de seguranca)
+    echo Desinstalando app para remover Device Owner...
+    adb uninstall br.com.szsolucoes.kiosklauncher >nul 2>&1
+    if %ERRORLEVEL% equ 0 (
+        echo App desinstalado e Device Owner removido!
+    ) else (
+        echo AVISO: Nao foi possivel desinstalar o app (pode nao estar instalado)
     )
-    echo App do totem instalado!
+) else (
+    echo Nenhum Device Owner encontrado.
+    REM Se nao for Device Owner, tentar remover apenas o Device Admin
+    echo Verificando se existe Device Admin ativo...
+    adb shell dpm remove-active-admin br.com.szsolucoes.kiosklauncher/.MyDeviceAdminReceiver >nul 2>&1
+    if %ERRORLEVEL% equ 0 (
+        echo Device Admin removido!
+    ) else (
+        echo Nenhum Device Admin ativo encontrado.
+    )
 )
+del temp_owners.txt 2>nul
+
+echo.
+echo [5/8] Instalando app do totem...
+echo Removendo app do totem...
+adb uninstall br.com.szsolucoes.totemsaojose
+if %ERRORLEVEL% neq 0 (
+    echo ERRO: Falha na remocao do app do totem!
+    pause
+    exit /b 1
+)
+echo App do totem removido!
+
+echo Instalando app do totem...
+adb install -r apk\app.apk
+if %ERRORLEVEL% neq 0 (
+    echo ERRO: Falha na instalacao do app do totem!
+    pause
+    exit /b 1
+)
+echo App do totem instalado!
 
 REM Criar arquivo device_owner.xml
 echo.
@@ -121,36 +158,9 @@ if %ERRORLEVEL% equ 0 (
 )
 del temp_accounts.txt
 
-REM Verificar Device Owner existente (compatível com múltiplas versões)
-echo.
-echo [7/8] Verificando Device Owner existente...
-REM Tentar comando moderno primeiro
-adb shell dpm list-owners 2>nul > temp_owners.txt
-if %ERRORLEVEL% neq 0 (
-    REM Android 7.x ou inferior - usar método alternativo
-    adb shell settings get secure device_owner_package 2>nul > temp_owners.txt
-)
-
-REM Verificar se encontrou Device Owner
-findstr /C:"br.com.szsolucoes.kiosklauncher" temp_owners.txt >nul
-if %ERRORLEVEL% equ 0 (
-    echo AVISO: Este app ja e Device Owner!
-    goto :skip_owner_setup
-)
-
-findstr /C:"device-owner" temp_owners.txt >nul
-if %ERRORLEVEL% equ 0 (
-    echo AVISO: Outro Device Owner encontrado!
-    echo Tentando remover...
-    REM Tentar remover owner atual (se existir)
-    adb shell dpm remove-active-admin br.com.szsolucoes.kiosklauncher/.MyDeviceAdminReceiver 2>nul
-)
-
-REM Limpar dados do app (se existir)
-echo Limpando dados do app anterior...
-adb shell pm clear br.com.szsolucoes.kiosklauncher >nul 2>&1
-
 REM Configurar como Device Owner
+echo.
+echo [7/8] Configurando Device Owner...
 echo Configurando como Device Owner...
 adb shell dpm set-device-owner br.com.szsolucoes.kiosklauncher/.MyDeviceAdminReceiver
 if %ERRORLEVEL% neq 0 (
@@ -170,13 +180,11 @@ if %ERRORLEVEL% neq 0 (
     echo adb shell dumpsys account ^| findstr google
     echo adb shell settings get secure device_owner_package
     echo.
-    del device_owner.xml temp_owners.txt 2>nul
+    del device_owner.xml 2>nul
     pause
     exit /b 1
 )
 
-:skip_owner_setup
-echo Device Owner configurado!
 echo Device Owner configurado!
 
 REM Limpar arquivo temporario
